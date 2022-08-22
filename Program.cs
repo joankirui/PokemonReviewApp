@@ -19,9 +19,14 @@ builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+//using the development environment because we do not have an SSL certificate
+builder.Environment.EnvironmentName = Environments.Development;
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+/*builder.WebHost.UseKestrel();*/ // LINUX HOST
+builder.WebHost.UseContentRoot(Directory.GetCurrentDirectory());
+builder.WebHost.UseIISIntegration(); //WINDOWS HOST
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -51,7 +56,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (!builder.Environment.IsDevelopment())
+{
+    //we restrict this when we have an SSL certificate from a domain
+    app.UseHttpsRedirection();
+}
+
 
 app.UseAuthorization();
 

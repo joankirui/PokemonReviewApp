@@ -59,7 +59,7 @@ namespace PokemonReviewApp.Controllers
                 return NotFound();
             }
 
-            var owner = _mapper.Map<OwnerDto>(_ownerRepository.GetPokemonByOwner(ownerId));
+            var owner = _mapper.Map<List<PokemonDto>>(_ownerRepository.GetPokemonByOwner(ownerId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
